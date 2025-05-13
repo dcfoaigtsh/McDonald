@@ -11,7 +11,7 @@ public class SingleCustomer4: MonoBehaviour
     public CustomerManager customerManager;
 
     [TextArea]
-    public string orderMessage = "Please talk to clerk 4 and help me buy:\nSandwich, Corn Soup, Egg Tart, Milk Tea";
+    public string orderMessage = "Please talk to clerk 4 and help me buy:\nFried Chicken, Curly Fries, Egg Tart, Juice";
 
     void OnEnable()
     {

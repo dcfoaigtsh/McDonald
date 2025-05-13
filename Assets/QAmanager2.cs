@@ -30,7 +30,7 @@ public class QAManager2 : MonoBehaviour
         "Hot Dog",
         "Salad",
         "Onion Rings",
-        "Milk Tea"
+        "Sprite",
     };
 
     private List<List<(string name, int price)>> optionsPerStage = new List<List<(string, int)>> {
@@ -38,7 +38,7 @@ public class QAManager2 : MonoBehaviour
         new List<(string, int)> { ("French Fries", 40), ("Salad", 50), ("Corn Soup", 45), ("Curly Fries", 50) },
         new List<(string, int)> { ("Chicken Nuggets", 60), ("Onion Rings", 55), ("Donut", 50), ("Egg Tart", 50) },
         new List<(string, int)> { ("Coke", 60), ("Sprite", 60), ("Milk Tea", 70), ("Juice", 65) },
-        new List<(string, int)> { ("$240", 240), ("$190", 190), ("$235", 235), ("$260", 260) }
+        new List<(string, int)> { ("$240", 240), ("$235", 235), ("$190", 190), ("$260", 260) }
     };
 
     void Start()

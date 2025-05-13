@@ -16,19 +16,16 @@ public class GameDescription : MonoBehaviour
     {
         Infos.Add(new Info()
         {
-            Title = "Welcome",
             Content = "Welcome to 'Order Assistant'!\n\nYou are a new assistant tasked with helping customers place their orders. Each customer will tell you what they want—read carefully and make sure you get it right!"
         });
 
         Infos.Add(new Info()
         {
-            Title = "How to Play",
             Content = "1. When a customer appears, click the button to talk to them.\n2. Follow the instructions and go to the correct clerk to place the order.\n3. Each customer will ask for a main dish, side dish, snack, and drink."
         });
 
         Infos.Add(new Info()
         {
-            Title = "Your Goal",
             Content = "Help all customers complete their orders correctly.\n\nOnce all orders are completed, the game will move to the result screen to see how well you did. Good luck!"
         });
     }
