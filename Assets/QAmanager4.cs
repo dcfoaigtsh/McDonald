@@ -4,19 +4,17 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class QAManager : MonoBehaviour
+public class QAManager4 : MonoBehaviour
 {
     public TextMeshProUGUI statementText;
     public TextMeshProUGUI scoreText;
     public List<Button> optionButtons;
     public Button restartButton;
-
-    public SingleCustomer singleCustomer;
+    public SingleCustomer4 singleCustomer;  // ✅ 改為連接該顧客
 
     private int currentStage = 0;
     private List<string> selections = new List<string>();
     private int totalPrice = 0;
-    private bool isCorrect = false;
 
     private string[] questions = new string[] {
         "Please choose your main dish",
@@ -26,14 +24,12 @@ public class QAManager : MonoBehaviour
         "Please select the correct total price"
     };
 
-    private List<string> correctAnswers = new List<string> { "Burger", "French Fries", "Chicken Nuggets", "Coke" };
-
     private List<List<(string name, int price)>> optionsPerStage = new List<List<(string, int)>> {
         new List<(string, int)> { ("Burger", 80), ("Hot Dog", 70), ("Sandwich", 75), ("Fried Chicken", 90) },
         new List<(string, int)> { ("French Fries", 40), ("Salad", 50), ("Corn Soup", 45), ("Curly Fries", 50) },
         new List<(string, int)> { ("Chicken Nuggets", 60), ("Onion Rings", 55), ("Donut", 50), ("Egg Tart", 50) },
         new List<(string, int)> { ("Coke", 60), ("Sprite", 60), ("Milk Tea", 70), ("Juice", 65) },
-        new List<(string, int)> { ("$240", 240), ("$190", 190), ("$220", 220), ("$260", 260) }
+        new List<(string, int)> { ("$190", 190), ("$220", 220), ("$240", 240), ("$255", 255) }
     };
 
     void Start()
@@ -42,7 +38,6 @@ public class QAManager : MonoBehaviour
         scoreText.text = "";
         selections.Clear();
         totalPrice = 0;
-        isCorrect = false;
         BindButtons();
         ShowCurrentStage();
     }
@@ -55,9 +50,6 @@ public class QAManager : MonoBehaviour
             optionButtons[i].onClick.RemoveAllListeners();
             optionButtons[i].onClick.AddListener(() => StartCoroutine(OnOptionSelected(idx)));
         }
-
-        restartButton.onClick.RemoveAllListeners();
-        restartButton.onClick.AddListener(RestartQuiz);
     }
 
     void ShowCurrentStage()
@@ -96,91 +88,35 @@ public class QAManager : MonoBehaviour
         }
         else
         {
-            bool priceCorrect = selectedOption.price == totalPrice;
+            bool isCorrect = (index == 3);  // ✅ 第四個選項是正確答案 ($255)
 
-            // 檢查餐點是否全對
-            bool orderCorrect = true;
-            for (int i = 0; i < correctAnswers.Count; i++)
-            {
-                if (i >= selections.Count || selections[i] != correctAnswers[i])
-                {
-                    orderCorrect = false;
-                    break;
-                }
-            }
-
-            isCorrect = (orderCorrect && priceCorrect);
-
-            // 顯示正確與錯誤提示顏色
             for (int i = 0; i < optionButtons.Count; i++)
             {
                 var btnText = optionButtons[i].GetComponentInChildren<TextMeshProUGUI>();
-                int thisPrice = optionsPerStage[4][i].price;
-
-                // 如果餐點也正確且價格對，顯示綠色
-                if (thisPrice == totalPrice && orderCorrect)
-                {
+                if (optionsPerStage[4][i].price == totalPrice)
                     btnText.color = Color.green;
-                }
-                // 如果這是玩家點的選項但錯了 → 顯示紅色
                 else if (i == index)
-                {
                     btnText.color = Color.red;
-                }
-                // 其餘不變色
             }
+
             yield return new WaitForSeconds(1f);
 
-            // 設定結算標題文字
-            if (orderCorrect && priceCorrect)
-                statementText.text = "Order Completed!\nYour selections:";
-            else if (orderCorrect && !priceCorrect)
-                statementText.text = "Wrong Price!\nYour selections:";
-            else
-                statementText.text = "Wrong Order!\nYour selections:";
-
-            // 顯示選項
+            statementText.text = isCorrect ? "Order Completed!\nYour selections:" : "Wrong Price!\nYour selections:";
             for (int i = 0; i < selections.Count; i++)
-            {
-                if (i < correctAnswers.Count)
-                {
-                    if (selections[i] == correctAnswers[i])
-                    {
-                        // 正確項目顯示綠色
-                        statementText.text += $"\n<color=green>- {selections[i]}</color>";
-                    }
-                    else
-                    {
-                        // 錯誤項目顯示紅色
-                        statementText.text += $"\n<color=red>- {selections[i]}</color>";
-                    }
-                }
-                else
-                {
-                    // 若 index 超出正確答案長度（防呆）
-                    statementText.text += $"\n<color=red>- {selections[i]}</color>";
-                }
-            }
+                statementText.text += $"\n- {selections[i]}";
+            statementText.text += $"\nTotal: {selectedOption.name}";
 
-            // 顯示金額（錯的要紅色）
-            if (!orderCorrect || !priceCorrect)
-                statementText.text += $"\n<color=red>Total: {selectedOption.name}</color>";
-            else
-                statementText.text += $"\n<color=green>Total: {selectedOption.name}</color>";
-
-
+            restartButton.gameObject.SetActive(true);
             foreach (var btn in optionButtons)
                 btn.gameObject.SetActive(false);
 
-            restartButton.gameObject.SetActive(!isCorrect);
+            yield return new WaitForSeconds(1f);
+            gameObject.SetActive(false);
 
-            if (isCorrect)
+            // ✅ 通知顧客流程完成
+            if (singleCustomer != null)
             {
-                yield return new WaitForSeconds(1f);
-                gameObject.SetActive(false);
-
-                if (singleCustomer != null)
-                    singleCustomer.NotifyCustomerManager();
+                singleCustomer.NotifyCustomerManager();
             }
         }
     }
@@ -190,8 +126,6 @@ public class QAManager : MonoBehaviour
         currentStage = 0;
         selections.Clear();
         totalPrice = 0;
-        isCorrect = false;
-
         restartButton.gameObject.SetActive(false);
 
         foreach (var btn in optionButtons)

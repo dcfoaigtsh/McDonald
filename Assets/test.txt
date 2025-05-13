@@ -1,0 +1,70 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+
+public class CustomerManager : MonoBehaviour
+{
+    public TextMeshProUGUI statementText;
+    public Button responseButton;
+
+    public List<GameObject> qaManagers;  // 指定四個 QAManager 物件
+    private int stage = 0;
+
+    private List<string> orderMessages = new List<string>
+    {
+        "Please talk to clerk 1 and help me buy:\nBurger, French Fries, Chicken Nuggets, Coke",
+        "Please talk to clerk 2 and help me buy:\nHot Dog, Curly Fries, Donut, Sprite",
+        "Please talk to clerk 3 and help me buy:\nFried Chicken, Salad, Onion Rings, Juice",
+        "Please talk to clerk 4 and help me buy:\nSandwich, Corn Soup, Egg Tart, Milk Tea"
+    };
+
+    void Start()
+    {
+        ShowGreeting();  // 一開始先問「Can you help me」
+    }
+
+    void ShowGreeting()
+    {
+        statementText.text = "Can you help me buy some food?";
+        responseButton.GetComponentInChildren<TextMeshProUGUI>().text = "Yes";
+        responseButton.onClick.RemoveAllListeners();
+        responseButton.onClick.AddListener(ShowCurrentOrder);  // 不要 stage++
+    }
+
+    void ShowCurrentOrder()
+    {
+        if (stage >= orderMessages.Count)
+        {
+            Debug.Log("All orders complete!");
+            statementText.text = "Thank you! All orders are done!";
+            responseButton.gameObject.SetActive(false);
+            return;
+        }
+
+        statementText.text = orderMessages[stage];
+        responseButton.GetComponentInChildren<TextMeshProUGUI>().text = "OK";
+        responseButton.onClick.RemoveAllListeners();
+        responseButton.onClick.AddListener(OnFinish);
+    }
+
+    void OnFinish()
+    {
+        gameObject.SetActive(false);
+        Debug.Log($"Customer finished stage {stage}. Starting QAManager...");
+
+        if (stage < qaManagers.Count)
+        {
+            qaManagers[stage].SetActive(true);  // 正確對應 QA 0~3
+        }
+    }
+
+    // 被 QAManager 呼叫，用來開始下一組點餐流程
+    public void NextCustomerRequest()
+    {
+        stage++;  // ✅ 這裡才進入下一階段
+        gameObject.SetActive(true);
+        ShowCurrentOrder();
+    }
+}
