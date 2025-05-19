@@ -9,6 +9,7 @@ public class SingleCustomer : MonoBehaviour
     public Button responseButton;
     public GameObject qaManager;
     public CustomerManager customerManager;
+    public GameObject completeIcon; 
 
     [TextArea]
     public string orderMessage = "Please talk to clerk 1 and help me buy:\nBurger, French Fries, Chicken Nuggets, Coke";
@@ -43,6 +44,8 @@ public class SingleCustomer : MonoBehaviour
     // 呼叫此函數讓下一位顧客開始
     public void NotifyCustomerManager()
     {
+        if (completeIcon != null)
+            completeIcon.SetActive(true);
         if (customerManager != null)
             customerManager.NextCustomer();
     }
