@@ -15,10 +15,6 @@ public class CustomerManager : MonoBehaviour
     void Start()
     {
         ActivateCustomer(currentCustomerIndex);
-
-        // 一開始先確保 GameOver 面板是隱藏的
-        if (gameOverUI != null)
-            gameOverUI.gameObject.SetActive(false);
     }
 
     // 啟用指定顧客，其餘關閉
