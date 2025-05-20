@@ -10,6 +10,11 @@ public class SingleCustomer3: MonoBehaviour
     public GameObject qaManager;
     public CustomerManager customerManager;
     public GameObject completeIcon;
+
+    [Header("Navigation")]
+    public DestinationLineDrawer drawer;
+    public Transform employee3;
+    public UnityEngine.AI.NavMeshAgent agentForThisRoute;
     
 
     [TextArea]
@@ -33,7 +38,17 @@ public class SingleCustomer3: MonoBehaviour
         statementText.text = orderMessage;
         responseButton.GetComponentInChildren<TextMeshProUGUI>().text = "OK";
         responseButton.onClick.RemoveAllListeners();
-        responseButton.onClick.AddListener(StartQA);
+        responseButton.onClick.AddListener(() => {
+            if (drawer != null)
+            {
+                if (employee3 != null)
+                    drawer.ChangeDestination(employee3);
+                if (agentForThisRoute != null)
+                    drawer.ChangeNavAgent(agentForThisRoute);
+            }
+
+            StartQA();
+        });
     }
 
     void StartQA()

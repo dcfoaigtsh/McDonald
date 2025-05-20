@@ -13,10 +13,17 @@ public class QAManager : MonoBehaviour
 
     public SingleCustomer singleCustomer;
 
+    [Header("Path Management")]
+    public DestinationLineDrawer drawer;
+    public Transform nextCustomer; // 顧客 2 的 Transform
+    public UnityEngine.AI.NavMeshAgent agentForThisRoute; // ✅ 玩家自己的 NavMeshAgent（作為起點）
+
     private int currentStage = 0;
     private List<string> selections = new List<string>();
     private int totalPrice = 0;
     private bool isCorrect = false;
+    
+    
 
     private string[] questions = new string[] {
         "Please choose your main dish",
@@ -26,7 +33,9 @@ public class QAManager : MonoBehaviour
         "Please select the correct total price"
     };
 
-    private List<string> correctAnswers = new List<string> { "Burger", "French Fries", "Chicken Nuggets", "Coke" };
+    private List<string> correctAnswers = new List<string> {
+        "Burger", "French Fries", "Chicken Nuggets", "Coke"
+    };
 
     private List<List<(string name, int price)>> optionsPerStage = new List<List<(string, int)>> {
         new List<(string, int)> { ("Burger", 80), ("Hot Dog", 70), ("Sandwich", 75), ("Fried Chicken", 90) },
@@ -111,27 +120,21 @@ public class QAManager : MonoBehaviour
 
             isCorrect = (orderCorrect && priceCorrect);
 
-            // 顯示正確與錯誤提示顏色
+            // 顯示選項顏色
             for (int i = 0; i < optionButtons.Count; i++)
             {
                 var btnText = optionButtons[i].GetComponentInChildren<TextMeshProUGUI>();
                 int thisPrice = optionsPerStage[4][i].price;
 
-                // 如果餐點也正確且價格對，顯示綠色
                 if (thisPrice == totalPrice && orderCorrect)
-                {
                     btnText.color = Color.green;
-                }
-                // 如果這是玩家點的選項但錯了 → 顯示紅色
                 else if (i == index)
-                {
                     btnText.color = Color.red;
-                }
-                // 其餘不變色
             }
+
             yield return new WaitForSeconds(1f);
 
-            // 設定結算標題文字
+            // 顯示結果敘述
             if (orderCorrect && priceCorrect)
                 statementText.text = "Order Completed!\nYour selections:";
             else if (orderCorrect && !priceCorrect)
@@ -139,35 +142,25 @@ public class QAManager : MonoBehaviour
             else
                 statementText.text = "Wrong Order!\nYour selections:";
 
-            // 顯示選項
             for (int i = 0; i < selections.Count; i++)
             {
                 if (i < correctAnswers.Count)
                 {
                     if (selections[i] == correctAnswers[i])
-                    {
-                        // 正確項目顯示綠色
                         statementText.text += $"\n<color=green>- {selections[i]}</color>";
-                    }
                     else
-                    {
-                        // 錯誤項目顯示紅色
                         statementText.text += $"\n<color=red>- {selections[i]}</color>";
-                    }
                 }
                 else
                 {
-                    // 若 index 超出正確答案長度（防呆）
                     statementText.text += $"\n<color=red>- {selections[i]}</color>";
                 }
             }
 
-            // 顯示金額（錯的要紅色）
             if (!orderCorrect || !priceCorrect)
                 statementText.text += $"\n<color=red>Total: {selectedOption.name}</color>";
             else
                 statementText.text += $"\n<color=green>Total: {selectedOption.name}</color>";
-
 
             foreach (var btn in optionButtons)
                 btn.gameObject.SetActive(false);
@@ -177,6 +170,16 @@ public class QAManager : MonoBehaviour
             if (isCorrect)
             {
                 yield return new WaitForSeconds(1f);
+
+                // ✅ 切換導航路線到下一位顧客
+                if (drawer != null)
+                {
+                    if (nextCustomer != null)
+                        drawer.ChangeDestination(nextCustomer); // ✅ 把終點設為顧客2
+
+                    if (agentForThisRoute != null)
+                        drawer.ChangeNavAgent(agentForThisRoute); // ✅ 把起點設為 pathAgent（玩家）
+                }
                 gameObject.SetActive(false);
 
                 if (singleCustomer != null)

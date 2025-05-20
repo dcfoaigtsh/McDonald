@@ -13,6 +13,12 @@ public class QAManager3 : MonoBehaviour
     public Button restartButton;
     public SingleCustomer3 singleCustomer;
 
+    [Header("Path Management")]
+    public DestinationLineDrawer drawer;
+    public Transform nextCustomer; // 顧客 2 的 Transform
+    public UnityEngine.AI.NavMeshAgent agentForThisRoute; // ✅ 玩家自己的 NavMeshAgent（作為起點）
+
+
     private int currentStage = 0;
     private List<string> selections = new List<string>();
     private int totalPrice = 0;
@@ -167,7 +173,17 @@ public class QAManager3 : MonoBehaviour
             if (isCorrect)
             {
                 yield return new WaitForSeconds(1f);
+                // ✅ 切換導航路線到下一位顧客
+                if (drawer != null)
+                {
+                    if (nextCustomer != null)
+                        drawer.ChangeDestination(nextCustomer); // ✅ 把終點設為顧客2
+
+                    if (agentForThisRoute != null)
+                        drawer.ChangeNavAgent(agentForThisRoute); // ✅ 把起點設為 pathAgent（玩家）
+                }
                 gameObject.SetActive(false);
+                
 
                 if (singleCustomer != null)
                     singleCustomer.NotifyCustomerManager();

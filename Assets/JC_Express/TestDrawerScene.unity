@@ -1248,6 +1248,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4371654238290525163, guid: 38e9a0f9d3e50da48b759c0e6c30cb0a, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].time
+      value: 0.019525796
+      objectReference: {fileID: 0}
+    - target: {fileID: 4371654238290525163, guid: 38e9a0f9d3e50da48b759c0e6c30cb0a, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].value
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5442367572439056540, guid: 38e9a0f9d3e50da48b759c0e6c30cb0a, type: 3}
       propertyPath: m_Name
       value: LineDrawer

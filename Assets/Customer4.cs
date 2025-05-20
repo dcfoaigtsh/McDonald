@@ -11,6 +11,11 @@ public class SingleCustomer4: MonoBehaviour
     public CustomerManager customerManager;
     public GameObject completeIcon;
 
+    [Header("Navigation")]
+    public DestinationLineDrawer drawer;
+    public Transform employee4;
+    public UnityEngine.AI.NavMeshAgent agentForThisRoute;
+
     [TextArea]
     public string orderMessage = "Please talk to clerk 4 and help me buy:\nFried Chicken, Curly Fries, Egg Tart, Juice";
 
@@ -32,7 +37,17 @@ public class SingleCustomer4: MonoBehaviour
         statementText.text = orderMessage;
         responseButton.GetComponentInChildren<TextMeshProUGUI>().text = "OK";
         responseButton.onClick.RemoveAllListeners();
-        responseButton.onClick.AddListener(StartQA);
+        responseButton.onClick.AddListener(() => {
+            if (drawer != null)
+            {
+                if (employee4 != null)
+                    drawer.ChangeDestination(employee4);
+                if (agentForThisRoute != null)
+                    drawer.ChangeNavAgent(agentForThisRoute);
+            }
+
+            StartQA();
+        });
     }
 
     void StartQA()

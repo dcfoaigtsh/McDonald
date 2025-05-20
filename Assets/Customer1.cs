@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.AI;
 
 public class SingleCustomer : MonoBehaviour
 {
@@ -9,7 +10,12 @@ public class SingleCustomer : MonoBehaviour
     public Button responseButton;
     public GameObject qaManager;
     public CustomerManager customerManager;
-    public GameObject completeIcon; 
+    public GameObject completeIcon;
+
+    [Header("Navigation")]
+    public DestinationLineDrawer drawer;
+    public Transform employee1;
+    public NavMeshAgent agentForThisRoute;
 
     [TextArea]
     public string orderMessage = "Please talk to clerk 1 and help me buy:\nBurger, French Fries, Chicken Nuggets, Coke";
@@ -32,7 +38,17 @@ public class SingleCustomer : MonoBehaviour
         statementText.text = orderMessage;
         responseButton.GetComponentInChildren<TextMeshProUGUI>().text = "OK";
         responseButton.onClick.RemoveAllListeners();
-        responseButton.onClick.AddListener(StartQA);
+        responseButton.onClick.AddListener(() => {
+            if (drawer != null)
+            {
+                if (employee1 != null)
+                    drawer.ChangeDestination(employee1);
+                if (agentForThisRoute != null)
+                    drawer.ChangeNavAgent(agentForThisRoute);
+            }
+
+            StartQA();
+        });
     }
 
     void StartQA()
@@ -41,7 +57,6 @@ public class SingleCustomer : MonoBehaviour
         qaManager.SetActive(true);
     }
 
-    // 呼叫此函數讓下一位顧客開始
     public void NotifyCustomerManager()
     {
         if (completeIcon != null)
