@@ -9,19 +9,26 @@ public class GameDescription : MonoBehaviour
     public GameObject InfomationBoard;
     public TextMeshProUGUI InfoContent;
     public Button CloseButton, NextButton, PreviousButton;
-    public List<Info> Infos = new List<Info>();  // 初始化避免 null
+    public GameObject VisualPage; // 新增的圖像說明頁
+
+    public List<Info> Infos = new List<Info>();  
     public int currentInfo;
 
     void Awake()
     {
         Infos.Add(new Info()
         {
-            Content ="Welcome to 'Order Assistant'!\n\nYou are a new helper. Your job is to take orders from customers. Read carefully and choose the right food!"
+            Content = "Welcome to 'Order Assistant'!\n\nYou are a new helper. Your job is to take orders from customers. Read carefully and choose the right food!"
         });
 
         Infos.Add(new Info()
         {
             Content = "1. When a customer comes, click to talk.\n2. Follow the steps and find the right clerk.\n3. Each customer wants a main dish, side dish, snack, and drink."
+        });
+
+        Infos.Add(new Info()
+        {
+            Content = "" // 圖像頁，不需文字
         });
 
         Infos.Add(new Info()
@@ -45,38 +52,32 @@ public class GameDescription : MonoBehaviour
 
     void SetupPageContent()
     {
-        InfoContent.text = Infos[currentInfo].Content;
+        if (currentInfo == 2 && VisualPage != null)
+        {
+            InfoContent.text = "";
+            VisualPage.SetActive(true);
+        }
+        else
+        {
+            InfoContent.text = Infos[currentInfo].Content;
+            if (VisualPage != null)
+                VisualPage.SetActive(false);
+        }
     }
 
     void TurnPage(int dir)
     {
         currentInfo += dir;
         currentInfo = Mathf.Clamp(currentInfo, 0, Infos.Count - 1);
-
         SetupPageContent();
         UpdateButtonVisibility();
     }
 
     void UpdateButtonVisibility()
     {
-        if (currentInfo == 0)
-        {
-            PreviousButton.gameObject.SetActive(false);
-            NextButton.gameObject.SetActive(true);
-            CloseButton.gameObject.SetActive(false);
-        }
-        else if (currentInfo == Infos.Count - 1)
-        {
-            PreviousButton.gameObject.SetActive(true);
-            NextButton.gameObject.SetActive(false);
-            CloseButton.gameObject.SetActive(true);
-        }
-        else
-        {
-            PreviousButton.gameObject.SetActive(true);
-            NextButton.gameObject.SetActive(true);
-            CloseButton.gameObject.SetActive(false);
-        }
+        PreviousButton.gameObject.SetActive(currentInfo != 0);
+        NextButton.gameObject.SetActive(currentInfo != Infos.Count - 1);
+        CloseButton.gameObject.SetActive(currentInfo == Infos.Count - 1);
     }
 }
 
