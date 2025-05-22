@@ -20,7 +20,7 @@ public class GameOverUI : MonoBehaviour
     
         if (gameOverPanel != null && messageText != null)
         {
-            messageText.text = "All Order Completed!\nGame over!";
+            messageText.text = "All Order Completed!\n Thanks for your service \n Game over!";
             gameOverPanel.SetActive(true);
         }
     }
