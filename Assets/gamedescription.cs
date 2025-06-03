@@ -45,7 +45,7 @@ public class GameDescription : MonoBehaviour
 
         NextButton.onClick.AddListener(() => TurnPage(1));
         PreviousButton.onClick.AddListener(() => TurnPage(-1));
-        CloseButton.onClick.AddListener(() => InfomationBoard.SetActive(false));
+        // CloseButton.onClick.AddListener(() => InfomationBoard.SetActive(false));
 
         UpdateButtonVisibility();
     }

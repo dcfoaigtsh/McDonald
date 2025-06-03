@@ -16,5 +16,7 @@ MonoBehaviour:
   Values:
   - featureSets:
     - com.htc.vive.openxr.featureset.vivexr
-  - featureSets: []
+    - com.meta.openxr.featureset.metaxr
+  - featureSets:
+    - com.meta.openxr.featureset.metaxr
   m_vulkanAdditionalGraphicsQueue: 0
