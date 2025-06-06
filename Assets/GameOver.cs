@@ -10,7 +10,7 @@ public class GameOverUI : MonoBehaviour
 
     void Start()
     {
-        gameOverPanel.SetActive(false); // 一開始隱藏面板
+        // gameOverPanel.SetActive(false); // 一開始隱藏面板
         closeButton.onClick.AddListener(() => gameOverPanel.SetActive(false));
     }
 
